@@ -1,0 +1,131 @@
+	<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Iniciar sesión</title>
+	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link rel="stylesheet" href="/css/login.css">
+	<script src="/javascript/vue.js"></script>
+	<script src="/javascript/axios.min.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+		integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+</head>
+
+<body>
+	<div class="main">
+		<div class="container">
+			<div class="middle">
+				<div id="login">
+					<form class="form-signin" @submit="formSubmit" id="app">
+						<!--action="/colaborador/login" method="get"-->
+						<p>
+							<span class="fa fa-user"></span><input type="text" v-model="usuario" id="inputUsuario"
+								class="form-control" Placeholder="Usuario" required autofocus>
+						</p>
+						<p>
+							<span class="fa fa-lock"></span>
+							<input type="password" id="inputPassword" v-model="contrasena" class="form-control"
+								placeholder="Contraseña" required>
+							<!---->
+							<!---->
+						</p>
+						<div>
+							<!--<span style="width:48%; text-align:left;  display: inline-block;"><a class="small-text"
+										href="#">Olvidaste tu contraseña?</a></span>-->
+							<span style="width:99%; text-align:right;  display: inline-block;"><button
+									class="btn btn-success">Iniciar Sesion</button></span>
+						</div>
+						<table>
+							<thead class="thead-dark">
+								<tr>
+									<th>Id</th>
+									<th>Usuario</th>
+									<th>Nombre</th>
+									<th>Apellido Paterno</th>
+									<th>Apellido Materno</th>
+									<th>Puesto</th>
+									<th>Departamento</th>
+									<th>Fecha de alta</th>
+								</tr>
+							</thead>
+							<tr v-for="us in user">
+								<td>{{us.idcolaborador}}</td>
+								<td>{{us.usuario}}</td>
+								<td>{{us.nombre}}</td>
+								<td>{{us.apellido1}}</td>
+								<td>{{us.apellido2}}</td>
+								<td>{{us.puesto}}</td>
+								<td>{{us.departamento}}</td>
+								<td>{{us.fechaalta}}</td>
+							</tr>
+						</table>
+					</form>
+				</div> <!-- end login -->
+				<div class="logo">
+					<img src="/img/HOUSESOFT.png" alt="house-logo" width="200" length="200" />
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		const app = new Vue({
+			el: '#app',
+			data: {
+				usuario: null,
+				contrasena: null,
+				user: null
+			},
+			mounted() {
+
+				/*.catch(function (error) {
+					console.log(error);
+				});*/
+				/*.then(response => (this.user = response.data)).catch(function (error) {
+					console.log(error.response.data);
+				});*/
+			},
+			methods: {
+				formSubmit() {
+
+					localStorage.usuario = this.usuario;
+					localStorage.contrasena = this.contrasena;
+
+					/*userInfo = {
+						usuario: this.usuario,
+						contrasena: this.contrasena
+					}
+					axios.get('http://localhost:8080/colaborador/login', {
+							params: userInfo
+						})
+						.then(response => (this.user = response.data)).then(function (response) {
+							console.log(user);
+							if(user != null){
+								window.location = "/deleteSuccess.html";
+								console.log("ASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+								
+							}
+						});*/
+
+					userInfo = {
+						usuario: this.usuario,
+						contrasena: this.contrasena
+					}
+					axios.get('http://localhost:8080/colaborador/login', {
+						params: userInfo
+					}).then(function (response) {
+						this.user = response.data;
+						console.log("Averr:");
+						console.log(user);
+						if (user != null) {
+							window.location = "/deleteSuccess.html"
+						}
+					});
+				}
+			}
+		});
+	</script>
+
+</html>
