@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mx.edu.ulsaoaxaca.siyt.mappers.ColaboradorMapper;
 import mx.edu.ulsaoaxaca.siyt.mappers.ComentarioMapper;
+import mx.edu.ulsaoaxaca.siyt.mappers.EncargoMapper;
 import mx.edu.ulsaoaxaca.siyt.model.Colaborador;
 import mx.edu.ulsaoaxaca.siyt.model.Comentario;
 @RestController
@@ -22,10 +23,12 @@ public class ComentarioController {
 	private ComentarioMapper comentarioMapper;
 	@Autowired
 	private ColaboradorMapper colaboradorMapper;
+	@Autowired
+	private EncargoMapper encargoMapper;
 	@GetMapping("/comentario/read")
 	public List<Comentario> findAll() {
 		System.out.println("Recibiendo READ comentarios");
-	
+		
 		List<Comentario> retorno = comentarioMapper.read();
 		for (int i = 0; i < retorno.size(); i++) {
 			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -48,13 +51,19 @@ public class ComentarioController {
 		 
 	}
 	@PostMapping("/comentario/create")
-	public List<Comentario> create(@RequestParam int idcolaborador, @RequestParam String comentario, @RequestParam("idencargo") int idencargo) {
+	public List<Comentario> create(@RequestParam("idcolaborador")  int idcolaborador, 
+			@RequestParam("comentario")  String comentario, 
+			@RequestParam("idencargo") int idencargo,
+			@RequestParam("status")  String status) {
 		System.out.println("Recibiendo POST comentario");
 		comentarioMapper.createDefDate(idcolaborador, comentario, idencargo);
+		encargoMapper.updateStatus(status, idencargo);
 		List<Comentario> retorno = comentarioMapper.readByIdEncargo(idencargo);
 		for (int i = 0; i < retorno.size(); i++) {
 			Colaborador aux = colaboradorMapper.getById(retorno.get(i).getIdcolaborador());
 			retorno.get(i).setColaborador(aux.getNombre()+" "+aux.getApellido1()+" "+aux.getApellido2());
+			retorno.get(i).setNewStatus(encargoMapper.readStatusById(idencargo));
+			
 		}
 		return retorno;
 	}

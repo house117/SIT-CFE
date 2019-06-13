@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import mx.edu.ulsaoaxaca.siyt.model.Comentario;
-import mx.edu.ulsaoaxaca.siyt.model.Departamento;
 @Mapper
 public interface ComentarioMapper {
 	@Select("select * from comentario")

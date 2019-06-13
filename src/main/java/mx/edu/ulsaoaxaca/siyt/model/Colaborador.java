@@ -10,14 +10,16 @@ public class Colaborador {
 
 	private String apellido1;
 	private String apellido2;
+	private String email;
 	private String puesto;
 	private int departamento;
 	private String departamentos;
 	private Date fechaalta;
 	
 	
+	
 	public Colaborador(int idcolaborador, String usuario, String contrasena, String nombre, String apellido1,
-			String apellido2, String puesto, int departamento, String departamentos, Date fechaalta) {
+			String apellido2, String email, String puesto, int departamento, String departamentos, Date fechaalta) {
 		super();
 		this.idcolaborador = idcolaborador;
 		this.usuario = usuario;
@@ -25,6 +27,7 @@ public class Colaborador {
 		this.nombre = nombre;
 		this.apellido1 = apellido1;
 		this.apellido2 = apellido2;
+		this.email = email;
 		this.puesto = puesto;
 		this.departamento = departamento;
 		this.departamentos = departamentos;
@@ -127,6 +130,14 @@ public class Colaborador {
 
 	public void setDepartamentos(String departamentos) {
 		this.departamentos = departamentos;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 

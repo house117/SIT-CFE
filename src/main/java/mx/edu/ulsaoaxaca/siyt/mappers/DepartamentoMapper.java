@@ -10,7 +10,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import mx.edu.ulsaoaxaca.siyt.model.Comentario;
 import mx.edu.ulsaoaxaca.siyt.model.Departamento;
 @Mapper
 public interface DepartamentoMapper {
@@ -19,6 +18,7 @@ public interface DepartamentoMapper {
 	
 	@Select("select * from departamentos where iddepartamento = #{iddepartamento}")
 	public Departamento readByIdColaborador(@Param("iddepartamento") int iddepartamento);
+	
 	
 	
 	@Select("select idencargo from comentario where idcomentario = #{idcomentario}")

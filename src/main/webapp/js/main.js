@@ -40,6 +40,8 @@ var app = new Vue({
             console.log("Estoy en categoría");
 
         },
+        /*Funciones de colaborador*/
+        /*CREAR colaborador*/
         fn_enviar_colaborador: function () {
             var fd = new FormData();
             fd.append("usuario", document.forms['cat-form'].usuario.value);
@@ -47,9 +49,10 @@ var app = new Vue({
             fd.append("nombre", document.forms['cat-form'].nombre.value);
             fd.append("apellido1", document.forms['cat-form'].apellido1.value);
             fd.append("apellido2", document.forms['cat-form'].apellido2.value);
+            fd.append("email", document.forms['cat-form'].email.value);
             fd.append("puesto", document.forms['cat-form'].puesto.value);
             fd.append("departamento", document.forms['cat-form'].departamento.value.replace(/[^0-9]/g, ''));
-            fd.append("fechaalta", document.forms['cat-form'].fechaalta.value);
+            //fd.append("fechaalta", document.forms['cat-form'].fechaalta.value);
             axios({
                     method: 'post',
                     url: 'colaborador/create',
@@ -62,22 +65,11 @@ var app = new Vue({
                 });
             this.opcion = 'listaColaboradores';
         },
-        fn_eliminar_colaborador: function (idcolaborador) {
-            console.log("ID COLABORADOR A ELIMINAR ES: " + idcolaborador)
-            axios.post('http://localhost:8080/colaborador/delete/?idcolaborador=' + idcolaborador)
-                .then(function (response) {
-                    // handle success
-                    this.app.colaboradores = response.data;
-                })
-        },
+        /*Editar colaborador*/
         fn_prepare_colaborador_edition(colaborador) {
             console.log("Preparando colaborador");
             this.colaboradorActual = colaborador;
             this.opcion = 'updateColaborador';
-        },
-        fn_prepare_edition(tarea) {
-            this.tareaActual = tarea;
-            this.opcion = 'editarTarea';
         },
         fn_editar_colaborador() {
             console.log("Ejecutando función de editar colaborador")
@@ -102,38 +94,30 @@ var app = new Vue({
             this.opcion = 'listaColaboradores';
             this.colaboradorActual = {};
         },
-        fn_editar() {
-            console.log("Ejecutando función de editar tarea")
-            var fd = new FormData();
-            console.log("el id encargo es: " + this.tareaActual.idencargo)
-            fd.append("descripcion", document.forms['edit-form'].descripcion.value);
-            fd.append("fechainicio", document.forms['edit-form'].fechainicio.value);
-            fd.append("fechafin", document.forms['edit-form'].fechafin.value);
-            fd.append("colaborador", document.forms['edit-form'].colaborador.value);
-            fd.append("status", document.forms['edit-form'].status.value);
-            fd.append("responsable", document.forms['edit-form'].responsable.value);
-            fd.append("idencargo", this.tareaActual.idencargo)
-            axios.post('http://localhost:8080/encargo/update/?' +
-                "descripcion=" + document.forms['edit-form'].descripcion.value +
-                "&fechainicio=" + document.forms['edit-form'].fechainicio.value +
-                "&fechafin=" + document.forms['edit-form'].fechafin.value +
-                "&colaborador=" + document.forms['edit-form'].colaborador.value.replace(/[^0-9]/g, '') +
-                "&status=" + document.forms['edit-form'].status.value +
-                "&responsable=" + document.forms['edit-form'].responsable.value.replace(/[^0-9]/g, '') +
-                "&idencargo=" + this.tareaActual.idencargo +
-                "&idColaboradorActual=" + this.colaboradorLogged.idcolaborador).then(function (response) {
-                // handle success
-                this.app.tareas = response.data;
-            }).catch(function (error) {
-                // handle error
-                alert(error);
-            });
-            this.opcion = 'listaTareas';
-            this.tareaActual = {};
+        /*Eliminar colaborador*/
+        fn_eliminar_colaborador: function (idcolaborador) {
+            console.log("ID COLABORADOR A ELIMINAR ES: " + idcolaborador)
+            axios.post('http://localhost:8080/colaborador/delete/?idcolaborador=' + idcolaborador)
+                .then(function (response) {
+                    // handle success
+                    this.app.colaboradores = response.data;
+                })
         },
         /**
          * Funciones de Tareas
          */
+        /*Leer Tareas*/ 
+        fn_setTareas: function (response) {
+            this.colaboradorLogged = response.data;
+            console.log("LO INTENTAS???");
+
+            axios.get('/encargo/read/?id=' + this.colaboradorLogged.idcolaborador)
+                .then(function (response) {
+                    this.app.tareas = response.data;
+                })
+            this.opcion = 'listaTareas'
+        },
+        /*crear una nueva Tarea*/
         fn_enviar: function () {
             console.log("Ejecutando función de insertar tarea")
             var fd = new FormData();
@@ -142,7 +126,7 @@ var app = new Vue({
             fd.append("fechafin", document.forms['cat-form'].fechafin.value);
             fd.append("colaborador", document.forms['cat-form'].colaborador.value.replace(/[^0-9]/g, ''));
             fd.append("status", document.forms['cat-form'].status.value);
-            fd.append("responsable", document.forms['cat-form'].responsable.value.replace(/[^0-9]/g, ''));
+            fd.append("responsable", this.colaboradorLogged.idcolaborador);
             fd.append("idColaboradorActual", this.colaboradorLogged.idcolaborador);
             axios({
                     method: 'post',
@@ -161,6 +145,41 @@ var app = new Vue({
                 });
                 this.opcion = 'listaTareas';
         },
+        /*Editar tarea*/
+        fn_prepare_edition(tarea) {
+            this.tareaActual = tarea;
+            this.opcion = 'editarTarea';
+        },
+        fn_editar() {
+            console.log("Ejecutando función de editar tarea")
+            /*var fd = new FormData();
+            console.log("el id encargo es: " + this.tareaActual.idencargo)
+            fd.append("descripcion", document.forms['edit-form'].descripcion.value);
+            fd.append("fechainicio", document.forms['edit-form'].fechainicio.value);
+            fd.append("fechafin", document.forms['edit-form'].fechafin.value);
+            fd.append("colaborador", document.forms['edit-form'].colaborador.value);
+            fd.append("status", document.forms['edit-form'].status.value);
+            fd.append("responsable", document.forms['edit-form'].responsable.value);
+            fd.append("idencargo", this.tareaActual.idencargo)*/
+            axios.post('http://localhost:8080/encargo/update/?' +
+                "descripcion=" + document.forms['edit-form'].descripcion.value +
+                "&fechainicio=" + document.forms['edit-form'].fechainicio.value +
+                "&fechafin=" + document.forms['edit-form'].fechafin.value +
+                "&colaborador=" + document.forms['edit-form'].colaborador.value.replace(/[^0-9]/g, '') +
+                "&status=" + document.forms['edit-form'].status.value +
+                "&responsable=" + this.colaboradorLogged.idcolaborador +
+                "&idencargo=" + this.tareaActual.idencargo +
+                "&idColaboradorActual=" + this.colaboradorLogged.idcolaborador).then(function (response) {
+                // handle success
+                this.app.tareas = response.data;
+            }).catch(function (error) {
+                // handle error
+                alert(error);
+            });
+            this.opcion = 'listaTareas';
+            this.tareaActual = {};
+        },
+        /*Eliminar tarea*/
         fn_eliminar: function (idencargo) {
             console.log("Id encargo a eliminar es: " + idencargo)
             axios.post('http://localhost:8080/encargo/delete/?idencargo=' + idencargo +
@@ -184,19 +203,10 @@ var app = new Vue({
                     alert(error);
                 });
         },
-        fn_setTareas: function (response) {
-            this.colaboradorLogged = response.data;
-            console.log("LO INTENTAS???");
-
-            axios.get('/encargo/read/?id=' + this.colaboradorLogged.idcolaborador)
-                .then(function (response) {
-                    this.app.tareas = response.data;
-                })
-            this.opcion = 'listaTareas'
-        },
+        
         fn_comments: function (id_tarea) {
-            console.log("id tarea es: " + id_tarea);
-            axios.get('/comentario/readPorEncargo/?id=' + id_tarea)
+            console.log("id tarea es: " + id_tarea.idencargo);
+            axios.get('/comentario/readPorEncargo/?id=' + id_tarea.idencargo)
                 .then(function (response) {
                     // handle success
                     this.app.comentarios = response.data;
@@ -237,7 +247,9 @@ var app = new Vue({
             console.log("La tarea actual es: " + this.tareaActual);
             fd.append("idcolaborador", this.colaboradorLogged.idcolaborador);
             fd.append("comentario", document.forms['comment-form'].comentario.value);
-            fd.append("idencargo", this.tareaActual);
+            fd.append("idencargo", this.tareaActual.idencargo);
+            fd.append("status", document.forms['comment-form'].status.value)
+            
             axios({
                     method: 'post',
                     url: '/comentario/create',
@@ -247,6 +259,7 @@ var app = new Vue({
                 .then(function (response) {
                     console.log("Bien hecho!")
                     this.app.comentarios = response.data;
+                    this.app.tareaActual.status = this.app.comentarios[0].newStatus;
                 }).catch(function (error) {
                     // handle error
                     alert(error);

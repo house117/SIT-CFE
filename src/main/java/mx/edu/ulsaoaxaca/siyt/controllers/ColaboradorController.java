@@ -54,16 +54,27 @@ public class ColaboradorController {
 	@PostMapping("/colaborador/create")
 	public List<Colaborador> create(@RequestParam String usuario, @RequestParam String contrasena,
 			@RequestParam String nombre, @RequestParam String apellido1, @RequestParam String apellido2,
-			@RequestParam String puesto, @RequestParam int departamento) {
-		colaboradorMapper.create(usuario, contrasena, nombre, apellido1, apellido2, puesto, departamento);
-		return colaboradorMapper.read();
+			@RequestParam String email, @RequestParam String puesto, @RequestParam int departamento) {
+		colaboradorMapper.create(usuario, contrasena, nombre, apellido1, apellido2, email, puesto, departamento);
+		// Departamento depto = departamentoMapper.readByIdColaborador(departamento);
+		List<Colaborador> listaColaboradores = colaboradorMapper.read();
+		for (int i = 0; i < listaColaboradores.size(); i++) {
+			Departamento depto = departamentoMapper.readByIdColaborador(listaColaboradores.get(i).getDepartamento());
+			listaColaboradores.get(i).setDepartamentos(depto.getNombre());
+		}
+		return listaColaboradores;
 	}
 
 	@RequestMapping(value = "/colaborador/delete/", method = { RequestMethod.GET, RequestMethod.POST })
 	public List<Colaborador> delete(@RequestParam int idcolaborador) {
 		System.out.println("asdasdasdASDASD");
 		colaboradorMapper.delete(idcolaborador);
-		return colaboradorMapper.read();
+		List<Colaborador> listaColaboradores = colaboradorMapper.read();
+		for (int i = 0; i < listaColaboradores.size(); i++) {
+			Departamento depto = departamentoMapper.readByIdColaborador(listaColaboradores.get(i).getDepartamento());
+			listaColaboradores.get(i).setDepartamentos(depto.getNombre());
+		}
+		return listaColaboradores;
 	}
 
 	@RequestMapping(value = "/colaborador/update/", method = { RequestMethod.GET, RequestMethod.POST })

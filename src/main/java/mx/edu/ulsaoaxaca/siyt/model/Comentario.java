@@ -8,6 +8,19 @@ public class Comentario {
 	private String colaborador;
 	private String comentario;
 	private Date fecha;
+	private String newStatus;
+	
+	
+	public Comentario(int idcomentario, int idcolaborador, String colaborador, String comentario, Date fecha,
+			String newStatus) {
+		super();
+		this.idcomentario = idcomentario;
+		this.idcolaborador = idcolaborador;
+		this.colaborador = colaborador;
+		this.comentario = comentario;
+		this.fecha = fecha;
+		this.newStatus = newStatus;
+	}
 
 	public Comentario(int idcomentario, int idcolaborador, String colaborador, String comentario, Date fecha) {
 		super();
@@ -67,6 +80,14 @@ public class Comentario {
 
 	public void setColaborador(String colaborador) {
 		this.colaborador = colaborador;
+	}
+
+	public String getNewStatus() {
+		return newStatus;
+	}
+
+	public void setNewStatus(String newStatus) {
+		this.newStatus = newStatus;
 	}
 
 }
