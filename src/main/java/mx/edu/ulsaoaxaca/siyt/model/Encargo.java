@@ -8,9 +8,10 @@ public class Encargo {
 	private Date fechainicio;
 	private Date fechafin;
 	private int colaborador;
+	private String colaboradors;
 	private String status;
 	private int responsable;
-
+	private String responsables;
 	public Encargo() {
 		super();
 	}
@@ -26,7 +27,21 @@ public class Encargo {
 		this.status = status;
 		this.responsable = responsable;
 	}
+	public String getColaboradors() {
+		return colaboradors;
+	}
 
+	public void setColaboradors(String colaboradors) {
+		this.colaboradors = colaboradors;
+	}
+
+	public String getResponsables() {
+		return responsables;
+	}
+
+	public void setResponsables(String responsables) {
+		this.responsables = responsables;
+	}
 	public int getIdencargo() {
 		return idencargo;
 	}

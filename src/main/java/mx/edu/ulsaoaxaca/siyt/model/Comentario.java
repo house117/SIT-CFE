@@ -5,8 +5,18 @@ import java.sql.Date;
 public class Comentario {
 	private int idcomentario;
 	private int idcolaborador;
+	private String colaborador;
 	private String comentario;
 	private Date fecha;
+
+	public Comentario(int idcomentario, int idcolaborador, String colaborador, String comentario, Date fecha) {
+		super();
+		this.idcomentario = idcomentario;
+		this.idcolaborador = idcolaborador;
+		this.colaborador = colaborador;
+		this.comentario = comentario;
+		this.fecha = fecha;
+	}
 
 	public Comentario() {
 		super();
@@ -49,6 +59,14 @@ public class Comentario {
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+
+	public String getColaborador() {
+		return colaborador;
+	}
+
+	public void setColaborador(String colaborador) {
+		this.colaborador = colaborador;
 	}
 
 }

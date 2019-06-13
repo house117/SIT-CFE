@@ -6,34 +6,65 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mx.edu.ulsaoaxaca.siyt.mappers.ColaboradorMapper;
 import mx.edu.ulsaoaxaca.siyt.mappers.ComentarioMapper;
+import mx.edu.ulsaoaxaca.siyt.model.Colaborador;
 import mx.edu.ulsaoaxaca.siyt.model.Comentario;
 @RestController
 public class ComentarioController {
 	@Autowired
 	private ComentarioMapper comentarioMapper;
-
+	@Autowired
+	private ColaboradorMapper colaboradorMapper;
 	@GetMapping("/comentario/read")
 	public List<Comentario> findAll() {
-		return comentarioMapper.read();
+		System.out.println("Recibiendo READ comentarios");
+	
+		List<Comentario> retorno = comentarioMapper.read();
+		for (int i = 0; i < retorno.size(); i++) {
+			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			Colaborador aux = colaboradorMapper.getById(retorno.get(i).getIdcolaborador());
+			System.out.println("El nommbre a devolver es: "+ aux.getNombre()+" "+aux.getApellido1()+" "+aux.getApellido2());
+			retorno.get(i).setColaborador(aux.getNombre()+" "+aux.getApellido1()+" "+aux.getApellido2());
+		}
+		return retorno;
 	}
-
+	
+	@GetMapping("/comentario/readPorEncargo")
+	public List<Comentario> findByEncargo(@RequestParam int id) {
+		System.out.println("Recibiendo READ de comentarios");
+		List<Comentario> retorno = comentarioMapper.readByIdEncargo(id);
+		for (int i = 0; i < retorno.size(); i++) {
+			Colaborador aux = colaboradorMapper.getById(retorno.get(i).getIdcolaborador());
+			retorno.get(i).setColaborador(aux.getNombre()+" "+aux.getApellido1()+" "+aux.getApellido2());
+		}
+		return retorno;
+		 
+	}
 	@PostMapping("/comentario/create")
-	public void create(@RequestParam int idcolaborador, @RequestParam String comentario, @Param("fecha") Date fecha) {
-		comentarioMapper.create(idcolaborador, comentario, fecha);
+	public List<Comentario> create(@RequestParam int idcolaborador, @RequestParam String comentario, @RequestParam("idencargo") int idencargo) {
+		System.out.println("Recibiendo POST comentario");
+		comentarioMapper.createDefDate(idcolaborador, comentario, idencargo);
+		List<Comentario> retorno = comentarioMapper.readByIdEncargo(idencargo);
+		for (int i = 0; i < retorno.size(); i++) {
+			Colaborador aux = colaboradorMapper.getById(retorno.get(i).getIdcolaborador());
+			retorno.get(i).setColaborador(aux.getNombre()+" "+aux.getApellido1()+" "+aux.getApellido2());
+		}
+		return retorno;
 	}
 
-	@RequestMapping(value = "/comentario/delete/{id}", method = { RequestMethod.GET, RequestMethod.POST })
-	public void delete(@PathVariable int idcolaborador) {
+	@RequestMapping(value = "/comentario/delete/", method = { RequestMethod.GET, RequestMethod.POST })
+	public List<Comentario> delete(@RequestParam int idcomentario) {
 		System.out.println("asdasdasdASDASD");
-		comentarioMapper.delete(idcolaborador);
+		int a = comentarioMapper.readByIdComentario(idcomentario);
+		comentarioMapper.delete(idcomentario);
+		return comentarioMapper.readByIdEncargo(a);
 	}
 
 	@RequestMapping(value = "/comentario/update/")

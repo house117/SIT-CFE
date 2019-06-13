@@ -11,13 +11,15 @@ CREATE TABLE `Colaborador` (
 PRIMARY KEY (`idColaborador`)
 );
 INSERT INTO colaborador(usuario, contrasena, nombre, apellido1, apellido2, puesto, departamento) values('house', '123', 'José Luis',  'Flores', 'García', 'CEO', 7);DROP TABLE IF EXISTS `Comentario`;
-CREATE TABLE `Comentario` (
-`idComentario` bigint unsigned NOT NULL AUTO_INCREMENT,
-`idColaborador` bigint NOT NULL,
-`Comentario` text,
-`Fecha` date DEFAULT NULL,
+CREATE TABLE Comentario (
+idcomentario bigint unsigned NOT NULL AUTO_INCREMENT,
+idcolaborador bigint NOT NULL,
+comentario text,
+fecha timestamp DEFAULT CURRENT_TIMESTAMP,
+idencargo bigint not null,
 PRIMARY KEY (`idComentario`),
- FOREIGN KEY (`idColaborador`) REFERENCES COLABORADOR(`idColaborador`)
+ FOREIGN KEY (`idColaborador`) REFERENCES COLABORADOR(`idColaborador`),
+FOREIGN KEY (`idencargo`) REFERENCES ENCARGO(`idencargo`)
 );
 
 DROP TABLE IF EXISTS `ENCARGO`;
