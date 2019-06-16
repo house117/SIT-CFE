@@ -1,6 +1,8 @@
 package mx.edu.ulsaoaxaca.siyt.controllers;
 
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
 
@@ -61,10 +63,6 @@ public class EncargoController {
 			System.out.println("Desc tarea de colaborador: " + retorno.get(i).getDescripcion());
 		}
 		for (int i = 0; i < retorno.size(); i++) {
-			Colaborador auxiliarColaborador = colaboradorMapper.getById(retorno.get(i).getColaborador());
-			System.out.println("El colaborador es: " + auxiliarColaborador.getNombre());
-			retorno.get(i).setColaboradors(auxiliarColaborador.getNombre() + " " + auxiliarColaborador.getApellido1()
-					+ " " + auxiliarColaborador.getApellido2());
 			Colaborador auxiliarResponsable = colaboradorMapper.getById(retorno.get(i).getResponsable());
 			retorno.get(i).setResponsables(auxiliarResponsable.getNombre() + " " + auxiliarResponsable.getApellido1()
 					+ " " + auxiliarResponsable.getApellido2());
@@ -79,35 +77,30 @@ public class EncargoController {
 	}
 
 	@PostMapping("/encargo/create")
-	public List<Encargo> create(@RequestParam String descripcion, @RequestParam Date fechainicio,
-			@RequestParam Date fechafin, @RequestParam int colaborador, @RequestParam String status,
+		public List<Encargo> create(@RequestParam String descripcion,
+		@RequestParam String status,
 			@RequestParam int responsable, @RequestParam int idColaboradorActual) {
-		encargoMapper.create(descripcion, fechainicio, fechafin, colaborador, status, responsable);
+		encargoMapper.create(descripcion, status, responsable);
 		List<Encargo> retorno = encargoMapper.readByColaborador(idColaboradorActual);
 		System.out.println("EL ID DE COLABORADOR RECIBIDO ES: " + idColaboradorActual);
 		for (int i = 0; i < retorno.size(); i++) {
 			System.out.println("Desc tarea de colaborador: " + retorno.get(i).getDescripcion());
 		}
 		for (int i = 0; i < retorno.size(); i++) {
-			Colaborador auxiliarColaborador = colaboradorMapper.getById(retorno.get(i).getColaborador());
-			System.out.println("El colaborador es: " + auxiliarColaborador.getNombre());
-			retorno.get(i).setColaboradors(auxiliarColaborador.getNombre() + " " + auxiliarColaborador.getApellido1()
-					+ " " + auxiliarColaborador.getApellido2());
 			Colaborador auxiliarResponsable = colaboradorMapper.getById(retorno.get(i).getResponsable());
 			retorno.get(i).setResponsables(auxiliarResponsable.getNombre() + " " + auxiliarResponsable.getApellido1()
 					+ " " + auxiliarResponsable.getApellido2());
 		}
 		Colaborador colaboradorEnviador = colaboradorMapper.getById(idColaboradorActual);
-		Colaborador colaboradorReceptor = colaboradorMapper.getById(colaborador);
 
 		// Gmail username
-		final String username = colaboradorEnviador.getEmail();
+		final String username = "josefloresgarcia17@gmail.com";
 
 		// Gmail password
 		final String password = "bxD7KZAJmZSmScqQAU";
 
 		// Receiver's email ID
-		String receiver = colaboradorReceptor.getEmail();
+		String receiver = colaboradorEnviador.getEmail();
 
 		// Sender's email ID
 		String sender = colaboradorEnviador.getEmail();
@@ -143,19 +136,35 @@ public class EncargoController {
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(receiver));
 
 			// Subject of the email
-			message.setSubject("SIT - CFE, Nueva Tarea Asignada");
+			message.setSubject("Su petición ha sido recibida");
 
 			// Body of the email
-			message.setContent("<h2>Nueva tarea de SIT - CFE</h2>" + "<h3>Buen día <b>"
-					+ colaboradorReceptor.getNombre() + ",</b></h3>" + " <p>Usted ha sido asignad@ como "
-					+ "colaborador/a en la siguiente tarea: <br>" + descripcion
-					+ ".<br><br> La cual tiene fecha límite: " + fechafin.toString() + "<br>" + "Y como responsable a: "
-					+ colaboradorEnviador.getNombre() + colaboradorEnviador.getApellido1() + " "
-					+ colaboradorEnviador.getApellido2() + "<br>" + " del departamento "
-					+ departamentoMapper.readByIdColaborador(colaboradorEnviador.getIdcolaborador()).getNombre()
-					+ "Sin más por el momento, reciba un grato saludo,</p>"
-					+ "<center><img width=\"200px\" src=\"https://www.brujuleamex.com/wp-content/uploads/Pagar-Recibos-CFE-en-Aguascalientes.jpg\" alt=\"CFE\"></center>"
-					+ "<center><small>Este mensaje ha sido auto-generado, por favor no responda al mismo</small></center>",
+			Calendar fecha = new GregorianCalendar();
+	        //Obtenemos el valor del año, mes, día,
+	        //hora, minuto y segundo del sistema
+	        //usando el método get y el parámetro correspondiente
+	        int año = fecha.get(Calendar.YEAR);
+	        int mes = fecha.get(Calendar.MONTH);
+	        int dia = fecha.get(Calendar.DAY_OF_MONTH);
+	        int hora = fecha.get(Calendar.HOUR_OF_DAY);
+	        int minuto = fecha.get(Calendar.MINUTE);
+	        int segundo = fecha.get(Calendar.SECOND);
+	        System.out.println("Fecha Actual: "
+	                           + dia + "/" + (mes+1) + "/" + año);
+			message.setContent("<!DOCTYPE html>"
+					+ "<head>\n" + 
+					"        <meta charset=\"utf-8\">"
+					+ "</head>"
+					+ "<body>"
+					+ "<h2>Nueva petición en arropando al mundo</h2>" + "<h3>Buen día, <b>"
+					+ colaboradorEnviador.getNombre() + ",</b></h3>" + " <p>Usted ha creado  "
+					+ " la siguiente preticion: <br>" + descripcion
+					+ ".<br><br> La cual ha sido recibida en la fecha: " + dia + "/" + (mes+1) + "/" + año + "<br>"
+					+ "En breve nos pondremos en contacto</p>"
+					+ "<center><img width=\"200px\" src=\"http://img.fenixzone.net/i/ECsZurm.png\"></center>"
+					+ "<center><small>Este mensaje ha sido auto-generado, por favor no responda al mismo</small></center>"
+					+ "</body>"
+					+ "</html>",
 					"text/html");
 			// Send email.
 			Transport.send(message);
@@ -178,10 +187,6 @@ public class EncargoController {
 			System.out.println("Desc tarea de colaborador: " + retorno.get(i).getDescripcion());
 		}
 		for (int i = 0; i < retorno.size(); i++) {
-			Colaborador auxiliarColaborador = colaboradorMapper.getById(retorno.get(i).getColaborador());
-			System.out.println("El colaborador es: " + auxiliarColaborador.getNombre());
-			retorno.get(i).setColaboradors(auxiliarColaborador.getNombre() + " " + auxiliarColaborador.getApellido1()
-					+ " " + auxiliarColaborador.getApellido2());
 			Colaborador auxiliarResponsable = colaboradorMapper.getById(retorno.get(i).getResponsable());
 			retorno.get(i).setResponsables(auxiliarResponsable.getNombre() + " " + auxiliarResponsable.getApellido1()
 					+ " " + auxiliarResponsable.getApellido2());
@@ -191,19 +196,15 @@ public class EncargoController {
 
 	@RequestMapping(value = "/encargo/update/", method = { RequestMethod.GET, RequestMethod.POST })
 	public List<Encargo> update(@RequestParam String descripcion, @RequestParam Date fechainicio,
-			@RequestParam Date fechafin, @RequestParam int colaborador, @RequestParam String status,
+			 @RequestParam String status,
 			@RequestParam int responsable, @RequestParam int idencargo, @RequestParam int idColaboradorActual) {
-		encargoMapper.update(descripcion, fechainicio, fechafin, colaborador, status, responsable, idencargo);
+		encargoMapper.update(descripcion, fechainicio, status, responsable, idencargo);
 		List<Encargo> retorno = encargoMapper.readByColaborador(idColaboradorActual);
 		System.out.println("EL ID DE COLABORADOR RECIBIDO ES: " + idColaboradorActual);
 		for (int i = 0; i < retorno.size(); i++) {
 			System.out.println("Desc tarea de colaborador: " + retorno.get(i).getDescripcion());
 		}
 		for (int i = 0; i < retorno.size(); i++) {
-			Colaborador auxiliarColaborador = colaboradorMapper.getById(retorno.get(i).getColaborador());
-			System.out.println("El colaborador es: " + auxiliarColaborador.getNombre());
-			retorno.get(i).setColaboradors(auxiliarColaborador.getNombre() + " " + auxiliarColaborador.getApellido1()
-					+ " " + auxiliarColaborador.getApellido2());
 			Colaborador auxiliarResponsable = colaboradorMapper.getById(retorno.get(i).getResponsable());
 			retorno.get(i).setResponsables(auxiliarResponsable.getNombre() + " " + auxiliarResponsable.getApellido1()
 					+ " " + auxiliarResponsable.getApellido2());

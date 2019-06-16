@@ -54,8 +54,8 @@ public class ColaboradorController {
 	@PostMapping("/colaborador/create")
 	public List<Colaborador> create(@RequestParam String usuario, @RequestParam String contrasena,
 			@RequestParam String nombre, @RequestParam String apellido1, @RequestParam String apellido2,
-			@RequestParam String email, @RequestParam String puesto, @RequestParam int departamento) {
-		colaboradorMapper.create(usuario, contrasena, nombre, apellido1, apellido2, email, puesto, departamento);
+			@RequestParam String email) {
+		colaboradorMapper.create(usuario, contrasena, nombre, apellido1, apellido2, email);
 		// Departamento depto = departamentoMapper.readByIdColaborador(departamento);
 		List<Colaborador> listaColaboradores = colaboradorMapper.read();
 		for (int i = 0; i < listaColaboradores.size(); i++) {
