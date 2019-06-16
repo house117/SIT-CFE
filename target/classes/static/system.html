@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!--
+		FAVICON
+	-->
+	<link rel="apple-touch-icon" sizes="57x57" href="/img/img/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="/img/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/img/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/img/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="/img/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="/img/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="/img/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/img/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="/img/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/img/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+	<link rel="manifest" href="/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+	<!--
+		FAVICON
+	-->
+	<meta charset="UTF-8">
+	<title>Arropando al mundo</title>
+	<meta http-equiv="Cache-control" content="public">
+	<meta http-equiv="Cache-control" content="private">
+	<meta http-equiv="Cache-control" content="no-cache">
+	<meta http-equiv="Cache-control" content="no-store">
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="-1" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link rel="stylesheet" href="/css/index.css">
+	<link rel="stylesheet" href="/css/login.css">
+	<script src="/js/vue.js"></script>
+	<script src="/js/axios.min.js"></script>
+	<script src="/js/popper.min.js"></script>
+	<script src="/js/jquery-3.2.1.slim.min.js"></script>
+	<script src="/js/bootstrap.min.js"> </script>
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+		integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+	<div id="app">
+		<div class="container-fluid navigation-bar-container  text-center" v-if="opcion!='login'">
+			<div id="titulo" class="alert alert-primary" role="alert">
+				Arropando al mundo
+			</div>
+
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+				<a class="navbar-brand" href="#">Arropando al mundo</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse"
+					data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mr-auto">
+
+						<button type="button" class="btn btn-outline-light"
+							@click="opcion='listaTareas'">Peticiones</button>&nbsp;
+						<button type="button" v-if="colaboradorLogged.idcolaborador==1" class="btn btn-outline-light"
+							@click="opcion='listaColaboradores'">Colaboradores</button>&nbsp;
+
+
+					</ul>
+					<button class="btn btn-outline-light my-2 my-sm-0" type="button" @click="fn_logout">Salir</button>
+
+				</div>
+			</nav>
+
+			<!--TAREAS INICIO-->
+			<!--Lista de tareas opcion='listaTareas'-->
+
+			<div v-if="opcion=='listaTareas'" class="border" style="padding:13px">
+				<h3>Peticiones</h3>
+				<div class="table-responsive">
+					<table class="table  table-striped table-dark" v-if="tareas.length>0">
+						<thead>
+							<tr>
+								<th>Descripcion</th>
+								<th>Fecha Inicio</th>
+								<th>Estado</th>
+								<th>Colaborador</th>
+								<th>Opciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="tarea in tareas">
+								<td>{{tarea.descripcion}}</td>
+								<td>{{tarea.fechainicio}}</td>
+								<td>{{tarea.status}}</td>
+								<td>{{tarea.responsables}}</td>
+								<td>
+									<div class="btn-group">
+										<button type="button" class="btn btn-primary dropdown-toggle"
+											data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										</button>
+										<div class="dropdown-menu" style="margin-left: -140px; padding:20px">
+											<button type="button" style="width: 150px;" class="btn btn-primary"
+												@click="fn_comments(tarea)">Ver comentarios</button>
+											<div class="dropdown-divider"></div>
+											<button v-if="colaboradorLogged.idcolaborador==tarea.responsable"
+												type="button" style="width: 150px;" class="btn btn-primary"
+												@click="fn_prepare_edition(tarea)">Editar</button>
+											<div class="dropdown-divider"></div>
+											<button v-if="colaboradorLogged.idcolaborador==tarea.responsable"
+												type="button" style="width: 150px;" class="btn btn-danger"
+												@click="fn_eliminar(tarea.idencargo)">Eliminar</button>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="alert alert-danger" role="alert" v-else>
+						Aún no hay tareas capturadas
+					</div>
+				</div>
+
+
+				<button class="btn btn-primary" @click="opcion='crearTarea'">Crear nueva petición</button>
+
+
+
+
+			</div>
+			<!--Lista de tareas FIN-->
+
+			<!--Ver comentarios de Tarea INICIO opcion='verComentarios'-->
+			<div v-if="opcion=='listaComentarios'" class="border"
+				style="padding-left:90px; padding-right: 90px; padding-bottom: 40px">
+				<h3>Petición:</h3>
+				<div class="table-responsive">
+					<table class="table table table-bordered table-dark" v-if="tareas.length>0">
+						<thead>
+
+						</thead>
+						<tbody>
+							<tr>
+								<th>Descripcion</th>
+								<td colspan="2">{{tareaActual.descripcion}}</td>
+							</tr>
+							<tr>
+								<th>Fecha Alta</th>
+								<th>Estado</th>
+								<th>Responsable</th>
+							</tr>
+							<tr>
+								<td>{{tareaActual.fechainicio}}</td>
+								<td>{{tareaActual.status}}</td>
+								<td>{{tareaActual.responsables}}</td>
+						</tbody>
+					</table>
+				</div>
+
+				<h3>Lista de comentarios</h3>
+
+				<div class="table-responsive">
+					<table class="table table-striped table-dark" v-if="comentarios.length>0">
+						<thead>
+							<tr>
+								<th>Colaborador</th>
+								<th>Comentario</th>
+								<th>Fecha</th>
+								<th>Opciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="comentario in comentarios">
+								<td>{{comentario.colaborador}}</td>
+								<td>{{comentario.comentario}}</td>
+								<td>{{comentario.fecha}}</td>
+								<td>
+									<div class="btn-group">
+										<button type="button" class="btn btn-primary dropdown-toggle"
+											data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										</button>
+										<div class="dropdown-menu" style="margin-left: -140px; padding:20px">
+											<button type="button" class="btn btn-danger" style="width: 150px;"
+												@click="fn_eliminarComentario(comentario.idcomentario, comentario.idencargo)">Eliminar</button>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="alert alert-danger" role="alert" v-else>
+						Aún no hay comentarios capturados
+					</div>
+				</div>
+
+
+				<div class="container border">
+					<h2 class="control-label2">Agregar comentario</h2>
+					<br>
+
+					<form name="comment-form">
+						<div class="form-group">
+
+							<label v-if="colaboradorLogged.idcolaborador==1" class="control-label"
+								style="display: inline; text-align: left">Editar estado de la
+								petición: </label><br>
+							<select v-if="colaboradorLogged.idcolaborador==1" class="form-control form-control-sm"
+								name="status" v-bind:value="tareaActual.status">
+								<option>Iniciado</option>
+								<option>En proceso</option>
+								<option>Terminado</option>
+								<option>Cancelado</option>
+							</select>
+							<br>
+							<label class="control-label">Comentario: </label>
+							<textarea class="form-control" name="comentario" value="alv" rows="3"></textarea>
+							<br>
+							<button type="button" class="btn btn-primary" @click="fn_enviar_comment">Agregar
+								comentario</button>
+							<button type="button" class="btn" target="_self"
+								@click="opcion='listaTareas'">Regresar</button>
+						</div>
+				</div>
+				</form>
+			</div>
+
+			<!--Ver comentarios de Tarea FIN opcion='verComentarios'-->
+		</div>
+
+		<!--Creación de nueva Tarea opcion='crearTarea'-->
+		<div class="container border" v-if="opcion=='crearTarea'">
+			<h2 class="control-label2">Nueva peticion</h2>
+			<form name="cat-form">
+				<div class="form-group">
+					<label class="control-label">Descripcion: </label>
+					<textarea class="form-control" name="descripcion" rows="3"></textarea><br>
+					<label class="control-label">Status: </label>
+					<select class="form-control form-control-sm" name="status">
+						<option>Iniciado</option>
+						<option>En proceso</option>
+						<option>Terminado</option>
+						<option>Cancelado</option>
+					</select>
+					<br>
+					<button type="button" class="btn btn-primary" @click="fn_enviar">Crear peticion</button>
+					<button type="button" class="btn" target="_self" @click="opcion='listaTareas'">Cancelar</button>
+				</div>
+			</form>
+		</div>
+
+
+		<!--Creación de nueva Tarea fin -->
+
+		<!--Edición de Tarea opcion='editarTarea'-->
+		<div class="container" v-if="opcion=='editarTarea'">
+			<h2 class="control-label2">Editar Peticion</h2>
+			<form name="edit-form">
+				<div class="form-group">
+					<label class="control-label">Descripcion: </label>
+					<textarea class="form-control" name="descripcion" rows="3">{{tareaActual.descripcion}}</textarea>
+					<label class="control-label">Fecha de inicio: </label><input type="date" name="fechainicio"
+						v-bind:value="tareaActual.fechainicio" class="form-control"><br>
+					<label class="control-label">Estado: </label>
+					<select class="form-control form-control-sm" name="status" v-bind:value="tareaActual.status">
+						<option>Iniciado</option>
+						<option>En proceso</option>
+						<option>Terminado</option>
+						<option>Cancelado</option>
+					</select>
+					<label class="control-label">Responsable: </label>
+					<select class="form-control form-control-sm" name="responsable">
+						<option v-for="colaborador in colaboradores">
+							{{colaborador.idcolaborador}} {{ colaborador.nombre }} {{colaborador.apellido1}}
+							{{colaborador.apellido2}}
+						</option>
+					</select><br>
+					<button type="button" class="btn btn-primary" @click="fn_editar">Actualizar Datos</button>
+					<button type="button" class="btn" target="_self" @click="opcion='listaTareas'">Cancelar</button>
+				</div>
+			</form>
+		</div>
+
+
+		<!--Creación de nueva Tarea fin -->
+		<!--TAREAS FIN-->
+		<!--COLABORADORES INICIO -->
+		<!--Lista de colaboradores INICIO opcion = 'listaColaboradores'-->
+		<div v-if="opcion=='listaColaboradores'" class="container border" style="padding-bottom: 20px;">
+			<h3>Lista de colaboradores</h3>
+			<div class="table-responsive">
+				<table class="table table-striped table-dark" v-if="colaboradores.length>0">
+					<thead>
+						<tr>
+							<th>Usuario</th>
+							<th>Nombre</th>
+							<th>Email</th>
+							<th>Fecha Alta</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="colaborador in colaboradores">
+							<td>{{colaborador.usuario}}</td>
+							<td>{{colaborador.nombre}} {{colaborador.apellido1}} {{colaborador.apellido2}}</td>
+							<td>{{colaborador.email}}</td>
+							<td>{{colaborador.fechaalta}}</td>
+
+							<td>
+								<div class="btn-group">
+									<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+										aria-haspopup="true" aria-expanded="false">
+
+									</button>
+									<div class="dropdown-menu" style="margin-left: -140px; padding:20px">
+										<div class="dropdown-divider"></div>
+										<button type="button" style="width: 150px;" class="btn btn-primary"
+											@click="fn_prepare_colaborador_edition(colaborador)">Editar</button>
+										<div class="dropdown-divider"></div>
+										<button type="button" style="width: 150px;" class="btn btn-danger"
+											@click="fn_eliminar_colaborador(colaborador.idcolaborador)">Eliminar</button>
+
+
+									</div>
+								</div>
+
+							</td>
+
+						</tr>
+					</tbody>
+				</table>
+				<div class="alert alert-danger" role="alert" v-else>
+					Aún no hay colaboradores capturados
+				</div>
+			</div>
+
+			<button class="btn btn-primary" @click="opcion='crearColaborador'">Crear un nuevo colaborador</button>
+
+		</div>
+		<!--LISTA colaborador FIN-->
+
+		<!--Crear colaborador INICIO opcion = 'crearColaborador'-->
+		<div class="container border" v-if="opcion=='crearColaborador'">
+			<h2 class="control-label2">Nuevo Colaborador</h2>
+			<form name="cat-form" action="/encargo/create" method="POST">
+				<div class="form-group">
+					<label class="control-label">Usuario: </label><input type="text" name="usuario"
+						class="form-control"><br>
+					<label class="control-label">Contraseña: </label><input type="text" name="contrasena"
+						class="form-control"><br>
+					<label class="control-label">Nombre: </label><input type="text" name="nombre"
+						class="form-control"><br>
+					<label class="control-label">Apellido paterno: </label><input type="text" name="apellido1"
+						class="form-control"><br>
+					<label class="control-label">Apellido materno: </label><input type="text" name="apellido2"
+						class="form-control"><br>
+					<label class="control-label">Email: </label><input type="text" name="email"
+						class="form-control"><br>
+					<br>
+					<button type="button" class="btn btn-primary" @click="fn_enviar_colaborador">Crear
+						Colaborador</button>
+					<button type="button" class="btn" target="_self"
+						@click="opcion='listaColaboradores'">Regresar</button>
+				</div>
+			</form>
+		</div>
+		<!--crear colaborador FIN opcion = 'crearColaborador'-->
+		<!--UPDATE colaborador INICIO opcion = 'updateColaborador'-->
+
+
+		<div class="container border" v-if="opcion=='updateColaborador'">
+
+			<h2 class="control-label2">Editar Colaborador</h2>
+
+			<form name="col-form" method="POST">
+				<div class="form-group">
+					<label class="control-label">Usuario: </label><input type="text" name="usuario"
+						v-bind:value="colaboradorActual.usuario" class="form-control"><br>
+					<label class="control-label">Contraseña: </label><input type="text" name="contrasena"
+						v-bind:value="colaboradorActual.contrasena" class="form-control"><br><br>
+					<button type="button" class="btn btn-primary" @click="fn_editar_colaborador">Actualizar
+						Datos</button>
+					<button type="button" class="btn" target="_self"
+						@click="opcion='listaColaboradores'">Regresar</button>
+				</div>
+			</form>
+		</div>
+
+
+		<!--UPDATE colaborador FIN opcion = 'updateColaborador'-->
+		<!--COLABORADORES FIN JAJA-->
+
+		<!--LOGIN-->
+		<br><br>
+		<div class="wrapper fadeInDown" v-if="opcion=='login'">
+			<div id="formContent">
+				<!-- Tabs Titles -->
+
+				<!-- Icon -->
+				<div id="titulo" class="alert alert-success" role="alert">
+					Arropando Al Mundo - Iniciar Sesión
+				</div>
+				<div class="fadeIn first col-sm">
+					<img src="/img/FINAL1.png" width="1px" style="margin:10px;" id="icon" alt="User Icon" />
+				</div>
+
+				<!-- Login Form -->
+				<span v-if="errorLogin=='incorrecto'" class="badge badge-warning">Usuario o contraseña
+					incorrectos</span>
+				<form name="login-form">
+					<input type="text" id="login" class="fadeIn second" name="usuario" placeholder="Usuario">
+					<input type="password" id="password" class="fadeIn third" name="contrasena"
+						placeholder="Contraseña">
+					<input type="button" class="fadeIn fourth" value="ENTRAR" @click="fn_login">
+					<div class="dropdown-divider"></div>
+					<small>¿Aún no tienes cuenta? Regístrate</small><br>
+					<input type="button" class="fadeIn fourth btn btn-link" value="REGISTRARSE"
+						@click="opcion='crearColaborador'">
+				</form>
+
+				<!-- Remind Passowrd -->
+
+
+			</div>
+		</div>
+
+
+	</div><!-- DIV DE APP-->
+	<script type="text/javascript" src="/js/main.js"></script>
+</body>
+
+</html>
