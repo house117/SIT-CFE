@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 	<!--
@@ -25,436 +25,473 @@
 	<!--
 		FAVICON
 	-->
-	<meta charset="UTF-8">
-	<title>SIT CFE</title>
-	<meta http-equiv="Cache-control" content="public">
-	<meta http-equiv="Cache-control" content="private">
-	<meta http-equiv="Cache-control" content="no-cache">
-	<meta http-equiv="Cache-control" content="no-store">
-	<meta http-equiv="cache-control" content="no-cache" />
-	<meta http-equiv="Pragma" content="no-cache" />
-	<meta http-equiv="Expires" content="-1" />
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="mobile-web-app-capable" content="yes">
+	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-	<link rel="stylesheet" href="/css/index.css">
-	<link rel="stylesheet" href="/css/login.css">
-	<script src="/js/vue.js"></script>
-	<script src="/js/axios.min.js"></script>
-	<script src="/js/popper.min.js"></script>
-	<script src="/js/jquery-3.2.1.slim.min.js"></script>
-	<script src="/js/bootstrap.min.js"> </script>
+	<title>Arropando al mundo</title>
 
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-		integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+	<!-- Custom fonts for this theme -->
+	<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+		type="text/css">
+
+	<!-- Theme CSS -->
+	<link href="css/freelancer.min.css" rel="stylesheet">
 
 </head>
 
-<body>
+<body id="page-top">
 
-	<div id="app">
-		<div class="container-fluid navigation-bar-container  text-center" v-if="opcion!='login'">
-			<div id="titulo" class="alert alert-primary" role="alert">
-				Sistema de informes y tareas CFE
-			</div>
-
-			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-				<a class="navbar-brand" href="#">SIT CFE</a>
-				<button class="navbar-toggler" type="button" data-toggle="collapse"
-					data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-					aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-
-				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav mr-auto">
-
-						<button type="button" class="btn btn-outline-light"
-							@click="opcion='listaTareas'">Tareas</button>&nbsp;
-						<button type="button" class="btn btn-outline-light"
-							@click="opcion='listaColaboradores'">Colaboradores</button>&nbsp;
-
-
-					</ul>
-					<button class="btn btn-outline-light my-2 my-sm-0" type="button" @click="fn_logout">Salir</button>
-
-				</div>
-			</nav>
-
-			<!--TAREAS INICIO-->
-			<!--Lista de tareas opcion='listaTareas'-->
-
-			<div v-if="opcion=='listaTareas'" class="border" style="padding:13px">
-				<h3>Mis tareas</h3>
-				<table class="table table-striped table-dark" v-if="tareas.length>0">
-					<thead>
-						<tr>
-							<th>Descripcion</th>
-							<th>Fecha Inicio</th>
-							<th>Fecha Fin</th>
-							<th>Colaborador</th>
-							<th>Estado</th>
-							<th>Responsable</th>
-							<th>Opciones</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="tarea in tareas">
-							<td>{{tarea.descripcion}}</td>
-							<td>{{tarea.fechainicio}}</td>
-							<td>{{tarea.fechafin}}</td>
-							<td>{{tarea.colaboradors}}</td>
-							<td>{{tarea.status}}</td>
-							<td>{{tarea.responsables}}</td>
-							<td>
-								<div class="btn-group">
-									<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-										aria-haspopup="true" aria-expanded="false">
-									</button>
-									<div class="dropdown-menu" style="margin-left: -140px; padding:20px">
-										<button type="button" style="width: 150px;" class="btn btn-primary"
-											@click="fn_comments(tarea)">Ver comentarios</button>
-										<div class="dropdown-divider"></div>
-										<button v-if="colaboradorLogged.idcolaborador==tarea.responsable" type="button"
-											style="width: 150px;" class="btn btn-primary"
-											@click="fn_prepare_edition(tarea)">Editar</button>
-										<div class="dropdown-divider"></div>
-										<button v-if="colaboradorLogged.idcolaborador==tarea.responsable" type="button"
-											style="width: 150px;" class="btn btn-danger"
-											@click="fn_eliminar(tarea.idencargo)">Eliminar</button>
-									</div>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<div class="alert alert-danger" role="alert" v-else>
-					Aún no hay tareas capturadas
-				</div>
-				<button class="btn btn-primary" @click="opcion='crearTarea'">Crear nueva tarea</button>
-
-
-
-
-			</div>
-			<!--Lista de tareas FIN-->
-
-			<!--Ver comentarios de Tarea INICIO opcion='verComentarios'-->
-			<div v-if="opcion=='listaComentarios'" class="border"
-				style="padding-left:90px; padding-right: 90px; padding-bottom: 40px">
-				<h3>Tarea:</h3>
-				<table class="table table table-bordered table-dark" v-if="tareas.length>0">
-					<thead>
-
-					</thead>
-					<tbody>
-						<tr >
-							<th>Descripcion</th>
-							<td colspan="4">{{tareaActual.descripcion}}</td>
-						</tr>
-						<tr>
-							<th>Colaborador</th>
-							<th>Fecha Inicio</th>
-							<th>Fecha Fin</th>
-							<th>Estado</th>
-							<th>Responsable</th>
-						</tr>
-						<tr >
-							<td>{{tareaActual.colaboradors}}</td>
-							<td>{{tareaActual.fechainicio}}</td>
-							<td>{{tareaActual.fechafin}}</td>
-							<td>{{tareaActual.status}}</td>
-							<td>{{tareaActual.responsables}}</td>
-					</tbody>
-				</table>
-				<h3>Lista de comentarios</h3>
-				<table class="table table-striped table-dark" v-if="comentarios.length>0">
-					<thead>
-						<tr>
-							<th>Colaborador</th>
-							<th>Comentario</th>
-							<th>Fecha</th>
-							<th>Opciones</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="comentario in comentarios">
-							<td>{{comentario.colaborador}}</td>
-							<td>{{comentario.comentario}}</td>
-							<td>{{comentario.fecha}}</td>
-
-							<td>
-								<div class="btn-group">
-									<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-										aria-haspopup="true" aria-expanded="false">
-									</button>
-									<div class="dropdown-menu" style="margin-left: -140px; padding:20px">
-										<button type="button" class="btn btn-danger" style="width: 150px;"
-											@click="fn_eliminarComentario(comentario.idcomentario, comentario.idencargo)">Eliminar</button>
-									</div>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<div class="alert alert-danger" role="alert" v-else>
-					Aún no hay comentarios capturados
-				</div>
-				<div class="container border">
-					<h2 class="control-label2">Agregar comentario</h2>
-					<br>
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+		<div class="container">
+			<a class="navbar-brand js-scroll-trigger" href="#page-top">Arropando al mundo</a>
+			<button
+				class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded"
+				type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				Menu
+				<i class="fas fa-bars"></i>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item mx-0 mx-lg-1">
+						<a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Sobre el proyecto</a>
+					</li>
+					<!--<li class="nav-item mx-0 mx-lg-1">
+						<a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Contact</a>
+					</li>-->
+					<li class="nav-item mx-0 mx-lg-1">
+						<a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="system.html">Iniciar
+							sesión/registrarse</a>
+					</li>
 					
-					<form name="comment-form">
-						<div class="form-group">
-								<label class="control-label" style="display: inline; text-align: left">Editar estado de la tarea: </label><br>
-								<select class="form-control form-control-sm" name="status" v-bind:value="tareaActual.status">
-									<option>Iniciado</option>
-									<option>En proceso</option>
-									<option>Terminado</option>
-									<option>Cancelado</option>
-								</select>
-								<br>
-							<label class="control-label">Comentario: </label>
-							<textarea class="form-control" name="comentario" value="alv" rows="3"></textarea>
-							<br>
-							<button type="button" class="btn btn-primary" @click="fn_enviar_comment">Agregar
-								comentario</button>
-							<button type="button" class="btn" target="_self"
-								@click="opcion='listaTareas'">Regresar</button>
-						</div>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Masthead -->
+	<header class="masthead bg-primary text-white text-center">
+		<div class="container d-flex align-items-center flex-column">
+
+			<!-- Masthead Avatar Image -->
+			<img class="" width="400px" src="img/FINAL1.png" alt="">
+
+			<!-- Masthead Heading -->
+			<h1 class="masthead-heading text-uppercase mb-0">Arropando al mundo</h1>
+
+			<!-- Icon Divider -->
+			<div class="divider-custom divider-light">
+				<div class="divider-custom-line"></div>
+				<div class="divider-custom-icon">
+					<i class="fas fa-star"></i>
 				</div>
-				</form>
+				<div class="divider-custom-line"></div>
 			</div>
 
-			<!--Ver comentarios de Tarea FIN opcion='verComentarios'-->
-		</div>
+			<!-- Masthead Subheading -->
+			<p class="masthead-subheading font-weight-light mb-0">Reciclaje y reutilización de prendas</p>
 
-		<!--Creación de nueva Tarea opcion='crearTarea'-->
-		<div class="container border" v-if="opcion=='crearTarea'">
-			<h2 class="control-label2">Nueva Tarea</h2>
-			<form name="cat-form">
-				<div class="form-group">
-					<label class="control-label">Descripcion: </label>
-					<textarea class="form-control" name="descripcion" rows="3"></textarea>
-					<label class="control-label">Fecha de inicio: </label><input type="date" name="fechainicio"
-						class="form-control"><br>
-					<label class="control-label">Fecha final: </label><input type="date" name="fechafin"
-						class="form-control"><br>
-					<label class="control-label">Colaborador: </label>
-					<select class="form-control form-control-sm" name="colaborador">
-						<option v-for="colaborador in colaboradores">
-							{{colaborador.idcolaborador}} {{ colaborador.nombre }} {{colaborador.apellido1}}
-							{{colaborador.apellido2}}
-						</option>
-					</select><br>
-					<label class="control-label">Status: </label>
-					<select class="form-control form-control-sm" name="status">
-						<option>Iniciado</option>
-						<option>En proceso</option>
-						<option>Terminado</option>
-						<option>Cancelado</option>
-					</select>
-					<br>
-					<button type="button" class="btn btn-primary" @click="fn_enviar">Crear tarea</button>
-					<button type="button" class="btn" target="_self" @click="opcion='listaTareas'">Cancelar</button>
+		</div>
+	</header>
+
+	<!-- Portfolio Section -->
+	<section class="page-section portfolio" id="portfolio">
+		<div class="container">
+
+			<!-- Portfolio Section Heading -->
+			<h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Sobre ArropandoAlMundo...</h2>
+
+			<!-- Icon Divider -->
+			<div class="divider-custom">
+				<div class="divider-custom-line"></div>
+				<div class="divider-custom-icon">
+					<i class="fas fa-star"></i>
 				</div>
-			</form>
-		</div>
+				<div class="divider-custom-line"></div>
+			</div>
 
+			<!-- Portfolio Grid Items -->
+			<div class="row">
 
-		<!--Creación de nueva Tarea fin -->
-
-		<!--Edición de Tarea opcion='editarTarea'-->
-		<div class="container" v-if="opcion=='editarTarea'">
-			<h2 class="control-label2">Editar Tarea</h2>
-			<form name="edit-form">
-				<div class="form-group">
-					<label class="control-label">Descripcion: </label>
-					<textarea class="form-control" name="descripcion" rows="3">{{tareaActual.descripcion}}</textarea>
-					<label class="control-label">Fecha de inicio: </label><input type="date" name="fechainicio"
-						v-bind:value="tareaActual.fechainicio" class="form-control"><br>
-					<label class="control-label">Fecha final: </label><input type="date" name="fechafin"
-						v-bind:value="tareaActual.fechainicio" class="form-control"><br>
-					<label class="control-label">Colaborador: </label>
-					<select class="form-control form-control-sm" name="colaborador">
-						<option v-for="colaborador in colaboradores">
-							{{colaborador.idcolaborador}} {{ colaborador.nombre }} {{colaborador.apellido1}}
-							{{colaborador.apellido2}}
-						</option>
-					</select><br>
-					<label class="control-label">Estado: </label>
-					<select class="form-control form-control-sm" name="status" v-bind:value="tareaActual.status">
-						<option>Iniciado</option>
-						<option>En proceso</option>
-						<option>Terminado</option>
-						<option>Cancelado</option>
-					</select>
-					<label class="control-label">Responsable: </label>
-					<select class="form-control form-control-sm" name="responsable">
-						<option v-for="colaborador in colaboradores">
-							{{colaborador.idcolaborador}} {{ colaborador.nombre }} {{colaborador.apellido1}}
-							{{colaborador.apellido2}}
-						</option>
-					</select><br>
-					<button type="button" class="btn btn-primary" @click="fn_editar">Actualizar Datos</button>
-					<button type="button" class="btn" target="_self" @click="opcion='listaTareas'">Cancelar</button>
-				</div>
-			</form>
-		</div>
-
-
-		<!--Creación de nueva Tarea fin -->
-		<!--TAREAS FIN-->
-		<!--COLABORADORES INICIO -->
-		<!--Lista de colaboradores INICIO opcion = 'listaColaboradores'-->
-		<div v-if="opcion=='listaColaboradores'" class="container border" style="padding-bottom: 20px;">
-			<h3>Lista de colaboradores</h3>
-			<table class="table table-striped table-dark" v-if="colaboradores.length>0">
-				<thead>
-					<tr>
-						<th>Usuario</th>
-						<th>Nombre</th>
-						<th>Email</th>
-						<th>Puesto</th>
-						<th>Departamento</th>
-						<th>Fecha Alta</th>
-						<th>Opciones</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="colaborador in colaboradores">
-						<td>{{colaborador.usuario}}</td>
-						<td>{{colaborador.nombre}} {{colaborador.apellido1}} {{colaborador.apellido2}}</td>
-						<td>{{colaborador.email}}</td>
-						<td>{{colaborador.puesto}}</td>
-						<td>{{colaborador.departamentos}}</td>
-						<td>{{colaborador.fechaalta}}</td>
-
-						<td>
-							<div class="btn-group">
-								<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-									aria-haspopup="true" aria-expanded="false">
-
-								</button>
-								<div class="dropdown-menu" style="margin-left: -140px; padding:20px">
-									<div class="dropdown-divider"></div>
-									<button type="button" style="width: 150px;" class="btn btn-primary"
-										@click="fn_prepare_colaborador_edition(colaborador)">Editar</button>
-									<div class="dropdown-divider"></div>
-									<button type="button" style="width: 150px;" class="btn btn-danger"
-										@click="fn_eliminar_colaborador(colaborador.idcolaborador)">Eliminar</button>
-
-
-								</div>
+				<!-- Portfolio Item 1 -->
+				<div class="col-md-6 col-lg-4">
+					<div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal1">
+						<div
+							class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+							<div class="portfolio-item-caption-content text-center text-white">
+								<i class="fas fa-plus fa-3x"></i>
 							</div>
+						</div>
+						<img class="img-fluid" src="img/portfolio/cabin.png" alt="">
+					</div>
+				</div>
 
-						</td>
+				<!-- Portfolio Item 2 -->
+				<div class="col-md-6 col-lg-4">
+					<div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal2">
+						<div
+							class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+							<div class="portfolio-item-caption-content text-center text-white">
+								<i class="fas fa-plus fa-3x"></i>
+							</div>
+						</div>
+						<img class="img-fluid" src="img/portfolio/cake.png" alt="">
+					</div>
+				</div>
 
-					</tr>
-				</tbody>
-			</table>
-			<div class="alert alert-danger" role="alert" v-else>
-				Aún no hay colaboradores capturados
+				<!-- Portfolio Item 3 -->
+				<div class="col-md-6 col-lg-4">
+					<div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal3">
+						<div
+							class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+							<div class="portfolio-item-caption-content text-center text-white">
+								<i class="fas fa-plus fa-3x"></i>
+							</div>
+						</div>
+						<img class="img-fluid" src="img/portfolio/circus.png" alt="">
+					</div>
+				</div>
+
 			</div>
-			<button class="btn btn-primary" @click="opcion='crearColaborador'">Crear un nuevo colaborador</button>
+			<!-- /.row -->
 
 		</div>
-		<!--LISTA colaborador FIN-->
+	</section>
+	
+	<!-- Footer -->
+	<footer class="footer text-center">
+		<div class="container">
+			<div class="row">
 
-		<!--Crear colaborador INICIO opcion = 'crearColaborador'-->
-		<div class="container border" v-if="opcion=='crearColaborador'">
-			<h2 class="control-label2">Nuevo Colaborador</h2>
-			<form name="cat-form" action="/encargo/create" method="POST">
-				<div class="form-group">
-					<label class="control-label">Usuario: </label><input type="text" name="usuario"
-						class="form-control"><br>
-					<label class="control-label">Contraseña: </label><input type="text" name="contrasena"
-						class="form-control"><br>
-					<label class="control-label">Nombre: </label><input type="text" name="nombre"
-						class="form-control"><br>
-					<label class="control-label">Apellido paterno: </label><input type="text" name="apellido1"
-						class="form-control"><br>
-					<label class="control-label">Apellido materno: </label><input type="text" name="apellido2"
-						class="form-control"><br>
-					<label class="control-label">Email: </label><input type="text" name="email"
-						class="form-control"><br>
-					<label class="control-label">Puesto: </label><input type="text" name="puesto"
-						class="form-control"><br>
-					<label class="control-label">Departamento: </label>
-					<select class="form-control form-control-sm" name="departamento">
-						<option v-for="departamento in departamentos">
-							{{departamento.iddepartamento}} {{departamento.nombre}}
-						</option>
-					</select><br>
-					<br>
-					<button type="button" class="btn btn-primary" @click="fn_enviar_colaborador">Crear
-						Colaborador</button>
-					<button type="button" class="btn" target="_self"
-						@click="opcion='listaColaboradores'">Regresar</button>
-				</div>
-			</form>
-		</div>
-		<!--crear colaborador FIN opcion = 'crearColaborador'-->
-		<!--UPDATE colaborador INICIO opcion = 'updateColaborador'-->
-
-
-		<div class="container border" v-if="opcion=='updateColaborador'">
-
-			<h2 class="control-label2">Editar Colaborador</h2>
-
-			<form name="col-form" method="POST">
-				<div class="form-group">
-					<label class="control-label">Usuario: </label><input type="text" name="usuario"
-						v-bind:value="colaboradorActual.usuario" class="form-control"><br>
-					<label class="control-label">Contraseña: </label><input type="text" name="contrasena"
-						v-bind:value="colaboradorActual.contrasena" class="form-control"><br><br>
-					<button type="button" class="btn btn-primary" @click="fn_editar_colaborador">Actualizar
-						Datos</button>
-					<button type="button" class="btn" target="_self"
-						@click="opcion='listaColaboradores'">Regresar</button>
-				</div>
-			</form>
-		</div>
-
-
-		<!--UPDATE colaborador FIN opcion = 'updateColaborador'-->
-		<!--COLABORADORES FIN JAJA-->
-
-		<!--LOGIN-->
-		<br><br>
-		<div class="wrapper fadeInDown" v-if="opcion=='login'">
-			<div id="formContent">
-				<!-- Tabs Titles -->
-
-				<!-- Icon -->
-				<div id="titulo" class="alert alert-success" role="alert">
-					Sistema de informes y tareas CFE
-				</div>
-				<div class="fadeIn first col-sm">
-					<img src="/img/HOUSESOFT.png" width="1px" style="margin:10px;" id="icon" alt="User Icon" />
+				<!-- Footer Location -->
+				<div class="col-lg-4 mb-5 mb-lg-0">
+					<h4 class="text-uppercase mb-4">¿Dónde estamos?</h4>
+					<p class="lead mb-0">Puerto Angel #4 Mza 8, Fracc. Sta. Elena
+						<br>Santa Cruz Xoxocotlán, Oax.</p>
 				</div>
 
-				<!-- Login Form -->
-				<span v-if="errorLogin=='incorrecto'" class="badge badge-warning">Usuario o contraseña
-					incorrectos</span>
-				<form name="login-form">
-					<input type="text" id="login" class="fadeIn second" name="usuario" placeholder="Usuario">
-					<input type="password" id="password" class="fadeIn third" name="contrasena"
-						placeholder="Contraseña">
-					<input type="button" class="fadeIn fourth" value="ENTRAR" @click="fn_login">
-				</form>
-
-				<!-- Remind Passowrd -->
-
+				<!-- Footer Social Icons -->
+				<div class="col-lg-4 mb-5 mb-lg-0">
+					<h4 class="text-uppercase mb-4">Por la web</h4>
+					<a class="btn btn-outline-light btn-social mx-1" href="#">
+						<i class="fab fa-fw fa-facebook-f"></i>
+					</a>
+					<a class="btn btn-outline-light btn-social mx-1" href="#">
+						<i class="fab fa-fw fa-twitter"></i>
+					</a>
+					<a class="btn btn-outline-light btn-social mx-1" href="#">
+						<i class="fab fa-fw fa-linkedin-in"></i>
+					</a>
+					<a class="btn btn-outline-light btn-social mx-1" href="#">
+						<i class="fab fa-fw fa-dribbble"></i>
+					</a>
+				</div>
 
 			</div>
 		</div>
+	</footer>
 
+	<!-- Copyright Section -->
+	<section class="copyright py-4 text-center text-white">
+		<div class="container">
+			<small>Copyright &copy; arropandoalmundo 2019</small>
+		</div>
+	</section>
 
-	</div><!-- DIV DE APP-->
-	<script type="text/javascript" src="/js/main.js"></script>
+	<!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+	<div class="scroll-to-top d-lg-none position-fixed ">
+		<a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top">
+			<i class="fa fa-chevron-up"></i>
+		</a>
+	</div>
+
+	<!-- Portfolio Modals -->
+
+	<!-- Portfolio Modal 1 -->
+	<div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog"
+		aria-labelledby="portfolioModal1Label" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">
+						<i class="fas fa-times"></i>
+					</span>
+				</button>
+				<div class="modal-body text-center">
+					<div class="container">
+						<div class="row justify-content-center">
+							<div class="col-lg-8">
+								<!-- Portfolio Modal - Title -->
+								<h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Beneficiarios</h2>
+								<!-- Icon Divider -->
+								<div class="divider-custom">
+									<div class="divider-custom-line"></div>
+									<div class="divider-custom-icon">
+										<i class="fas fa-star"></i>
+									</div>
+									<div class="divider-custom-line"></div>
+								</div>
+								<!-- Portfolio Modal - Image -->
+								<img class="img-fluid rounded mb-5" src="img/ropa.png" alt="">
+								<!-- Portfolio Modal - Text -->
+								<p class="mb-5">Con el proyecto se pretende, primero que nada, beneficiar a aquellas comunidades que se encuentran viviendo en una situación en la que no cuentan con los suficientes recursos para adquirir prendas para su vestimenta.
+
+									
+								</p>
+								<p class="mb-5">
+
+									El planeta también resulta involucrado ya que mucha ropa termina en los océanos, misma que contamina ya que el tiempo en que se desintegra es muy largo.
+									
+									Las PyMEs a nivel estatal pueden generar planes de reciclaje para poder crear nueva ropa y así evitar el consumo de los recursos naturales (petróleo) ya que reutilizarían las prendas "viejas".
+								</p>
+								<p class="mb-5">C
+
+									
+									Las PyMEs a nivel estatal pueden generar planes de reciclaje para poder crear nueva ropa y así evitar el consumo de los recursos naturales (petróleo) ya que reutilizarían las prendas "viejas".
+								</p>
+								<button class="btn btn-primary" href="#" data-dismiss="modal">
+									<i class="fas fa-times fa-fw"></i>
+									Cerrar ventana
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Portfolio Modal 2 -->
+	<div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog"
+		aria-labelledby="portfolioModal2Label" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">
+						<i class="fas fa-times"></i>
+					</span>
+				</button>
+				<div class="modal-body text-center">
+					<div class="container">
+						<div class="row justify-content-center">
+							<div class="col-lg-8">
+								<!-- Portfolio Modal - Title -->
+								<h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Dato para reflexionar</h2>
+								<!-- Icon Divider -->
+								<div class="divider-custom">
+									<div class="divider-custom-line"></div>
+									<div class="divider-custom-icon">
+										<i class="fas fa-star"></i>
+									</div>
+									<div class="divider-custom-line"></div>
+								</div>
+								<!-- Portfolio Modal - Image -->
+								<img class="img-fluid rounded mb-5" src="img/tenis.png" alt="">
+								<!-- Portfolio Modal - Text -->
+								<p class="mb-5">Para obtener tan sólo un 1 kilo de tela de algodón, se requieren 10,800 litros de agua. De esa cantidad, 45% representa agua para riego consumida por la planta de algodón, 41% es agua de lluvia que se evapora del campo de cultivo durante el periodo de crecimiento y el 14% restante agua necesaria para diluir el agua residual que resulta del uso de fertilizantes del campo y de sustancias químicas.
+								</p>
+								<button class="btn btn-primary" href="#" data-dismiss="modal">
+									<i class="fas fa-times fa-fw"></i>
+									Close Window
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Portfolio Modal 3 -->
+	<div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog"
+		aria-labelledby="portfolioModal3Label" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">
+						<i class="fas fa-times"></i>
+					</span>
+				</button>
+				<div class="modal-body text-center">
+					<div class="container">
+						<div class="row justify-content-center">
+							<div class="col-lg-8">
+								<!-- Portfolio Modal - Title -->
+								<h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Ventaja del proyecto</h2>
+								<!-- Icon Divider -->
+								<div class="divider-custom">
+									<div class="divider-custom-line"></div>
+									<div class="divider-custom-icon">
+										<i class="fas fa-star"></i>
+									</div>
+									<div class="divider-custom-line"></div>
+								</div>
+								<!-- Portfolio Modal - Image -->
+								<img class="img-fluid rounded mb-5" src="img/reciclaje.png" alt="">
+								<!-- Portfolio Modal - Text -->
+								<p class="mb-5">
+										El proyecto ofrece una ventaja, la cual es la escalabilidad del mismo, ya que en un determinado momento se pretende incluir directamente a las empresas que fabrican estos productos, ofreciendo el software como parte de la logística de la misma empresa para la manufactura de las prendas y la reutilización, obteniendo un beneficio monetario por ocupar el sistema, que reducirá los costos de extracción de la materia prima así como los esfuerzos para reunir el material a procesar.
+								</p>
+								<button class="btn btn-primary" href="#" data-dismiss="modal">
+									<i class="fas fa-times fa-fw"></i>
+									Close Window
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Portfolio Modal 4 -->
+	<div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog"
+		aria-labelledby="portfolioModal4Label" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">
+						<i class="fas fa-times"></i>
+					</span>
+				</button>
+				<div class="modal-body text-center">
+					<div class="container">
+						<div class="row justify-content-center">
+							<div class="col-lg-8">
+								<!-- Portfolio Modal - Title -->
+								<h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Controller</h2>
+								<!-- Icon Divider -->
+								<div class="divider-custom">
+									<div class="divider-custom-line"></div>
+									<div class="divider-custom-icon">
+										<i class="fas fa-star"></i>
+									</div>
+									<div class="divider-custom-line"></div>
+								</div>
+								<!-- Portfolio Modal - Image -->
+								<img class="img-fluid rounded mb-5" src="img/portfolio/game.png" alt="">
+								<!-- Portfolio Modal - Text -->
+								<p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque
+									assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam
+									velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.
+								</p>
+								<button class="btn btn-primary" href="#" data-dismiss="modal">
+									<i class="fas fa-times fa-fw"></i>
+									Close Window
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Portfolio Modal 5 -->
+	<div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog"
+		aria-labelledby="portfolioModal5Label" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">
+						<i class="fas fa-times"></i>
+					</span>
+				</button>
+				<div class="modal-body text-center">
+					<div class="container">
+						<div class="row justify-content-center">
+							<div class="col-lg-8">
+								<!-- Portfolio Modal - Title -->
+								<h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Locked Safe</h2>
+								<!-- Icon Divider -->
+								<div class="divider-custom">
+									<div class="divider-custom-line"></div>
+									<div class="divider-custom-icon">
+										<i class="fas fa-star"></i>
+									</div>
+									<div class="divider-custom-line"></div>
+								</div>
+								<!-- Portfolio Modal - Image -->
+								<img class="img-fluid rounded mb-5" src="img/portfolio/safe.png" alt="">
+								<!-- Portfolio Modal - Text -->
+								<p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque
+									assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam
+									velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.
+								</p>
+								<button class="btn btn-primary" href="#" data-dismiss="modal">
+									<i class="fas fa-times fa-fw"></i>
+									Close Window
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Portfolio Modal 6 -->
+	<div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog"
+		aria-labelledby="portfolioModal6Label" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">
+						<i class="fas fa-times"></i>
+					</span>
+				</button>
+				<div class="modal-body text-center">
+					<div class="container">
+						<div class="row justify-content-center">
+							<div class="col-lg-8">
+								<!-- Portfolio Modal - Title -->
+								<h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Submarine</h2>
+								<!-- Icon Divider -->
+								<div class="divider-custom">
+									<div class="divider-custom-line"></div>
+									<div class="divider-custom-icon">
+										<i class="fas fa-star"></i>
+									</div>
+									<div class="divider-custom-line"></div>
+								</div>
+								<!-- Portfolio Modal - Image -->
+								<img class="img-fluid rounded mb-5" src="img/portfolio/submarine.png" alt="">
+								<!-- Portfolio Modal - Text -->
+								<p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque
+									assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam
+									velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.
+								</p>
+								<button class="btn btn-primary" href="#" data-dismiss="modal">
+									<i class="fas fa-times fa-fw"></i>
+									Close Window
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bootstrap core JavaScript -->
+	<script src="vendor/jquery/jquery.min.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Plugin JavaScript -->
+	<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+	<!-- Contact Form JavaScript -->
+	<script src="js/jqBootstrapValidation.js"></script>
+	<script src="js/contact_me.js"></script>
+
+	<!-- Custom scripts for this template -->
+	<script src="js/freelancer.min.js"></script>
+
 </body>
 
 </html>

@@ -13,19 +13,19 @@ import org.apache.ibatis.annotations.Update;
 import mx.edu.ulsaoaxaca.siyt.model.Encargo;
 @Mapper
 public interface EncargoMapper {
-	@Select("select idencargo, descripcion, fechainicio, fechafin, colaborador, status, responsable from encargo")
+	@Select("select idencargo, descripcion, fechainicio, status, responsable from encargo")
 	public List<Encargo> read();
 	
-	@Select("select idencargo, descripcion, fechainicio, fechafin, colaborador, status, responsable from encargo where colaborador = #{colaborador} OR responsable = #{colaborador}")
+	@Select("select idencargo, descripcion, fechainicio, status, responsable from encargo")
 	public List<Encargo> readByColaborador(@Param("colaborador")int colaborador);
 	
 	@Select("select status from encargo where idencargo=#{idencargo}")
 	public String readStatusById(@Param("idencargo") int idencargo);
 	
-	@Insert("INSERT INTO Encargo(descripcion, fechainicio, fechafin, colaborador, status, responsable) "
-			+ "values(#{descripcion}, #{fechainicio}, #{fechafin}, #{colaborador}, #{status}, #{responsable})")
-	public void create(@Param("descripcion") String descripcion, @Param("fechainicio") Date fechainicio,
-			@Param("fechafin") Date fechafin, @Param("colaborador") int colaborador, @Param("status") String status,
+	@Insert("INSERT INTO Encargo(descripcion, status, responsable) "
+			+ "values(#{descripcion},#{status}, #{responsable})")
+	public void create(@Param("descripcion") String descripcion,
+			@Param("status") String status,
 			@Param("responsable") int responsable);
 	
 	@Delete("delete from comentario where idencargo=#{idencargo}")
@@ -34,10 +34,10 @@ public interface EncargoMapper {
 	@Delete("delete from encargo where idencargo = #{idencargo}")
 	public void delete(@Param("idencargo") int idencargo);
 
-	@Update("UPDATE encargo SET  descripcion = #{descripcion}, fechainicio = #{fechainicio}, fechafin = #{fechafin}, "
-			+ "colaborador = #{colaborador}, status = #{status}, responsable = #{responsable} where idencargo = #{idencargo}")
+	@Update("UPDATE encargo SET  descripcion = #{descripcion}, fechainicio = #{fechainicio}, "
+			+ " status = #{status}, responsable = #{responsable} where idencargo = #{idencargo}")
 	public void update(@Param("descripcion") String descripcion, @Param("fechainicio") Date fechainicio,
-			@Param("fechafin") Date fechafin, @Param("colaborador") int colaborador, @Param("status") String status,
+			 @Param("status") String status,
 			@Param("responsable") int responsable, @Param("idencargo") int idencargo);
 	
 	@Update("UPDATE encargo SET status = #{status} where idencargo=#{idencargo}")

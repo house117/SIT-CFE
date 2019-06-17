@@ -23,10 +23,10 @@ public interface ColaboradorMapper {
 	@Select("Select * from colaborador where usuario=#{usuario} AND contrasena=#{contrasena}")
 	public List<Colaborador> readByUser(@Param("usuario") String usuario, @Param("contrasena") String contrasena);
 
-	@Insert("INSERT INTO colaborador(usuario, contrasena, nombre,  apellido1, apellido2, email, puesto, departamento) values(#{usuario}, #{contrasena}, #{nombre}, #{apellido1}, #{apellido2}, #{email} #{puesto}, #{departamento})")
+	@Insert("INSERT INTO colaborador(usuario, contrasena, nombre,  apellido1, apellido2, email) values(#{usuario}, #{contrasena}, #{nombre}, #{apellido1}, #{apellido2}, #{email})")
 	public void create(@Param("usuario") String usuario, @Param("contrasena") String contrasena,
 			@Param("nombre") String nombre, @Param("apellido1") String apellido1, @Param("apellido2") String apellido2,
-			@Param("email") String email, @Param("puesto") String puesto, @Param("departamento") int departamento);
+			@Param("email") String email);
 
 	@Delete("delete from colaborador where idcolaborador = #{idcolaborador}")
 	public void delete(@Param("idcolaborador") int idcolaborador);

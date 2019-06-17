@@ -50,8 +50,6 @@ var app = new Vue({
             fd.append("apellido1", document.forms['cat-form'].apellido1.value);
             fd.append("apellido2", document.forms['cat-form'].apellido2.value);
             fd.append("email", document.forms['cat-form'].email.value);
-            fd.append("puesto", document.forms['cat-form'].puesto.value);
-            fd.append("departamento", document.forms['cat-form'].departamento.value.replace(/[^0-9]/g, ''));
             //fd.append("fechaalta", document.forms['cat-form'].fechaalta.value);
             axios({
                     method: 'post',
@@ -63,7 +61,7 @@ var app = new Vue({
                     console.log(response.data);
                     this.app.colaboradores = response.data;
                 });
-            this.opcion = 'listaColaboradores';
+            this.opcion = 'login';
         },
         /*Editar colaborador*/
         fn_prepare_colaborador_edition(colaborador) {
@@ -122,9 +120,6 @@ var app = new Vue({
             console.log("Ejecutando función de insertar tarea")
             var fd = new FormData();
             fd.append("descripcion", document.forms['cat-form'].descripcion.value);
-            fd.append("fechainicio", document.forms['cat-form'].fechainicio.value);
-            fd.append("fechafin", document.forms['cat-form'].fechafin.value);
-            fd.append("colaborador", document.forms['cat-form'].colaborador.value.replace(/[^0-9]/g, ''));
             fd.append("status", document.forms['cat-form'].status.value);
             fd.append("responsable", this.colaboradorLogged.idcolaborador);
             fd.append("idColaboradorActual", this.colaboradorLogged.idcolaborador);
@@ -164,8 +159,6 @@ var app = new Vue({
             axios.post('http://localhost:8080/encargo/update/?' +
                 "descripcion=" + document.forms['edit-form'].descripcion.value +
                 "&fechainicio=" + document.forms['edit-form'].fechainicio.value +
-                "&fechafin=" + document.forms['edit-form'].fechafin.value +
-                "&colaborador=" + document.forms['edit-form'].colaborador.value.replace(/[^0-9]/g, '') +
                 "&status=" + document.forms['edit-form'].status.value +
                 "&responsable=" + this.colaboradorLogged.idcolaborador +
                 "&idencargo=" + this.tareaActual.idencargo +
@@ -243,12 +236,19 @@ var app = new Vue({
         },
         fn_enviar_comment: function () {
             console.log("Ejecutando función de insertar comentario")
+            var status;
+            if(this.colaboradorLogged.idcolaborador==1){
+                console.log("EL COLABORADOR ES 1")
+                status = document.forms['comment-form'].status.value;
+            }else{
+                status = this.tareaActual.status;
+            }
             var fd = new FormData();
             console.log("La tarea actual es: " + this.tareaActual);
             fd.append("idcolaborador", this.colaboradorLogged.idcolaborador);
             fd.append("comentario", document.forms['comment-form'].comentario.value);
             fd.append("idencargo", this.tareaActual.idencargo);
-            fd.append("status", document.forms['comment-form'].status.value)
+            fd.append("status", status)
             
             axios({
                     method: 'post',
