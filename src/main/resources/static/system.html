@@ -18,7 +18,7 @@
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="96x96" href="/img/favicon-96x96.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
-	<link rel="manifest" href="/manifest.json">
+		<!--<link rel="manifest" href="/manifest.json">-->
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
 	<meta name="theme-color" content="#ffffff">
@@ -240,12 +240,12 @@
 
 		<!--Creación de nueva Tarea opcion='crearTarea'-->
 		<div class="container border" v-if="opcion=='crearTarea'">
-			<h2 class="control-label2">Nueva peticion</h2>
+			<h2 class="control-label2">Nueva petición</h2>
 			<form name="cat-form">
 				<div class="form-group">
-					<label class="control-label">Descripcion: </label>
-					<textarea class="form-control" name="descripcion" rows="3"></textarea><br>
-					<label class="control-label">Status: </label>
+					<label class="control-label">Descripción breve: </label>
+					<textarea class="form-control" name="descripcion" rows="3" placeholder="Por favor especificar: cantidad de prendas, tipo de prendas y condiciones de las prendas "></textarea><br>
+					<label class="control-label">Estado: </label>
 					<select class="form-control form-control-sm" name="status">
 						<option>Iniciado</option>
 						<option>En proceso</option>
@@ -264,10 +264,10 @@
 
 		<!--Edición de Tarea opcion='editarTarea'-->
 		<div class="container" v-if="opcion=='editarTarea'">
-			<h2 class="control-label2">Editar Peticion</h2>
+			<h2 class="control-label2">Editar Petición</h2>
 			<form name="edit-form">
 				<div class="form-group">
-					<label class="control-label">Descripcion: </label>
+					<label class="control-label">Descripción: </label>
 					<textarea class="form-control" name="descripcion" rows="3">{{tareaActual.descripcion}}</textarea>
 					<label class="control-label">Fecha de inicio: </label><input type="date" name="fechainicio"
 						v-bind:value="tareaActual.fechainicio" class="form-control"><br>
