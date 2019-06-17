@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>First Vue App</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/javascript/vue.js"></script>
+    <script src="/javascript/app.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="mt-3 row justify-content-md-center" id="app">
+            <table class="table ml-2" v-if="usuarios">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Password</th>
+                        <th>Fecha Nac</th>
+                        <th>Rol</th>
+                        <th>Eliminar?</th>
+                    </tr>
+                </thead>
+                <tr v-for="usuario in usuarios">
+                    <td>{{usuario.user_id}}</td> 
+                    <td>{{usuario.user_name}}</td>
+                    <td>{{usuario.user_password}}</td>
+                    <td>{{usuario.user_birthdate}}</td>
+                    <td>{{usuario.user_role}}</td>
+                    <td><a v-bind:href="'http://localhost:8080/usuario/delete/'+usuario.user_id">Eliminar</a></td>
+                    <!--DATA BINDING-->
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                usuarios: null
+            },
+            mounted() {
+                axios
+                    .get('http://localhost:8080/usuario/findAll.json')
+                    .then(response => (this.usuarios = response.data))
+            }
+        })
+    </script>
+    <script>
+    </script>
+</body>
+</html>

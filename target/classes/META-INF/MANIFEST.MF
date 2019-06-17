@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Built-By: jose
-Build-Jdk: 11.0.3
-Implementation-Title: sistema-tareas
-Implementation-Version: 0.0.1-SNAPSHOT
-Implementation-Vendor-Id: mx.edu.ulsaoaxaca.siyt
-Implementation-URL: http://maven.apache.org
-Created-By: Maven Integration for Eclipse
-
