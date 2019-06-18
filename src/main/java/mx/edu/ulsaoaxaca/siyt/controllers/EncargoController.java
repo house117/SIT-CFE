@@ -94,16 +94,16 @@ public class EncargoController {
 		Colaborador colaboradorEnviador = colaboradorMapper.getById(idColaboradorActual);
 
 		// Gmail username
-		final String username = "josefloresgarcia17@gmail.com";
+		final String username = "arropandoalmundo@gmail.com";
 
 		// Gmail password
-		final String password = "bxD7KZAJmZSmScqQAU";
+		final String password = "house117!";
 
 		// Receiver's email ID
 		String receiver = colaboradorEnviador.getEmail();
 
 		// Sender's email ID
-		String sender = colaboradorEnviador.getEmail();
+		String sender = "arropandoalmundo@gmail.com";
 
 		// Sending email from gmail
 		String host = "smtp.gmail.com";
